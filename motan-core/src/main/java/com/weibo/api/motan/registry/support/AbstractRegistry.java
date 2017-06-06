@@ -194,6 +194,7 @@ public abstract class AbstractRegistry implements Registry {
             return;
         }
         Map<String, List<URL>> nodeTypeUrlsInRs = new HashMap<String, List<URL>>();
+        // 遍历url列表,根据每个url的nodeType来分组存放到nodeTypeUrlsInRs中
         for (URL surl : urls) {
             String nodeType = surl.getParameter(URLParamType.nodeType.getName(), URLParamType.nodeType.getValue());
             List<URL> oneNodeTypeUrls = nodeTypeUrlsInRs.get(nodeType);
@@ -203,6 +204,7 @@ public abstract class AbstractRegistry implements Registry {
             }
             oneNodeTypeUrls.add(surl);
         }
+        // 从订阅的分类响应中获取refUrl对应数据(??),如果不存在则创建
         Map<String, List<URL>> curls = subscribedCategoryResponses.get(refUrl);
         if (curls == null) {
             subscribedCategoryResponses.putIfAbsent(refUrl, new ConcurrentHashMap<String, List<URL>>());
@@ -210,10 +212,12 @@ public abstract class AbstractRegistry implements Registry {
         }
 
         // refresh local urls cache
+        // 遍历所有的nodeType，更新本地的url缓存
         for (String nodeType : nodeTypeUrlsInRs.keySet()) {
             curls.put(nodeType, nodeTypeUrlsInRs.get(nodeType));
         }
 
+        // 遍历所有的nodeType，通知每个nodeType对应的URL列表
         for (List<URL> us : nodeTypeUrlsInRs.values()) {
             listener.notify(getUrl(), us);
         }

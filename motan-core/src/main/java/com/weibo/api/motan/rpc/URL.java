@@ -68,6 +68,7 @@ public class URL {
         this.parameters = parameters;
     }
 
+    //解析url字符串为URL对象实例
     public static URL valueOf(String url) {
         if (StringUtils.isBlank(url)) {
             throw new MotanServiceException("url is null");
@@ -78,6 +79,7 @@ public class URL {
         String path = null;
         Map<String, String> parameters = new HashMap<String, String>();;
         int i = url.indexOf("?"); // seperator between body and parameters
+        // 如果存在参数，解析参数
         if (i >= 0) {
             String[] parts = url.substring(i + 1).split("\\&");
 
@@ -95,6 +97,7 @@ public class URL {
             url = url.substring(0, i);
         }
         i = url.indexOf("://");
+        // 解析协议?(协议有两种格式)
         if (i >= 0) {
             if (i == 0) throw new IllegalStateException("url missing protocol: \"" + url + "\"");
             protocol = url.substring(0, i);
@@ -108,21 +111,25 @@ public class URL {
             }
         }
 
+        // 解析路径
         i = url.indexOf("/");
         if (i >= 0) {
             path = url.substring(i + 1);
             url = url.substring(0, i);
         }
 
+        // 解析端口
         i = url.indexOf(":");
         if (i >= 0 && i < url.length() - 1) {
             port = Integer.parseInt(url.substring(i + 1));
             url = url.substring(0, i);
         }
+        // 解析主机
         if (url.length() > 0) host = url;
         return new URL(protocol, host, port, path, parameters);
     }
 
+    // 构建主机,端口字符串
     private static String buildHostPortStr(String host, int defaultPort) {
         if (defaultPort <= 0) {
             return host;
@@ -140,6 +147,7 @@ public class URL {
         return host;
     }
 
+    // 创建URL对象的拷贝
     public URL createCopy() {
         Map<String, String> params = new HashMap<String, String>();
         if (this.parameters != null) {
@@ -381,18 +389,22 @@ public class URL {
      * @return
      */
     public boolean canServe(URL refUrl) {
+        // check 路径
         if (refUrl == null || !this.getPath().equals(refUrl.getPath())) {
             return false;
         }
 
+        // check 协议
         if (!ObjectUtils.equals(protocol, refUrl.protocol)) {
             return false;
         }
 
+        // check 节点类型
         if (!StringUtils.equals(this.getParameter(URLParamType.nodeType.getName()), MotanConstants.NODE_TYPE_SERVICE)) {
             return false;
         }
 
+        // check 版本
         String version = getParameter(URLParamType.version.getName(), URLParamType.version.getValue());
         String refVersion = refUrl.getParameter(URLParamType.version.getName(), URLParamType.version.getValue());
         if (!version.equals(refVersion)) {

@@ -44,8 +44,11 @@ public class InitializationFactory {
             if (!inited) {
                 try {
                     LoggerUtil.info("AllSpiInitialization init.");
+                    // 获取扩展加载器
                     ExtensionLoader<Initializable> extensionLoader = ExtensionLoader.getExtensionLoader(Initializable.class);
+                    // 获取所有的扩展
                     List<Initializable> allInit = extensionLoader.getExtensions(null);
+                    // 便利并初始化每个扩展
                     if (allInit != null && !allInit.isEmpty()) {
                         for (Initializable initializable : allInit) {
                             try {

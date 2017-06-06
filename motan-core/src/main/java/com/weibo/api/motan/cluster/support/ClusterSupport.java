@@ -146,6 +146,7 @@ public class ClusterSupport<T> implements NotifyListener {
     @Override
     public synchronized void notify(URL registryUrl, List<URL> urls) {
         if (CollectionUtil.isEmpty(urls)) {
+            // 该url无订阅者
             onRegistryEmpty(registryUrl);
             LoggerUtil.warn("ClusterSupport config change notify, urls is empty: registry={} service={} urls=[]", registryUrl.getUri(),
                     url.getIdentity());

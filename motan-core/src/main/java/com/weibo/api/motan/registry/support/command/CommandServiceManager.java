@@ -151,6 +151,7 @@ public class CommandServiceManager implements CommandListener, ServiceListener {
         }
     }
 
+    // 发现带有命令的服务
     public List<URL> discoverServiceWithCommand(URL serviceUrl, Map<String, Integer> weights, RpcCommand rpcCommand) {
         String localIP = NetUtils.getLocalAddress().getHostAddress();
         return this.discoverServiceWithCommand(serviceUrl, weights, rpcCommand, localIP);
@@ -309,6 +310,7 @@ public class CommandServiceManager implements CommandListener, ServiceListener {
         return finalResult;
     }
 
+    // 根据URL发现一个组中所有的服务，并放入组-服务缓存Map中
     private List<URL> discoverOneGroup(URL urlCopy) {
         LoggerUtil.info("CommandServiceManager discover one group. url:" + urlCopy.toSimpleString());
         String group = urlCopy.getParameter(URLParamType.group.getName(), URLParamType.group.getValue());

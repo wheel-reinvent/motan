@@ -35,11 +35,15 @@ public class ApplicationInfo {
     public static final ConcurrentMap<String, Application> applications = new ConcurrentHashMap<String, Application>();
     private static String CLIENT = "-client";
 
+    // 从应用map中获取url对应的应用
     public static Application getApplication(URL url) {
         Application application = applications.get(url.getPath());
+        // 如果url对应的应用不存在并且url中key为nodeType的参数的值是referer则应用的类型是client,url的路径拼接上client后缀
         if (application == null && MotanConstants.NODE_TYPE_REFERER.equals(url.getParameter(URLParamType.nodeType.getName()))) {
             application = applications.get(url.getPath() + CLIENT);
+            // 如果url-client对应的应用不存在
             if(application == null){
+                // 根据应用的名称和模块的名称创建新的应用并放入应用字典中
                 String app = url.getParameter(URLParamType.application.getName(), URLParamType.application.getValue()) + CLIENT;
                 String module = url.getParameter(URLParamType.module.getName(), URLParamType.module.getValue()) + CLIENT;
 
@@ -50,6 +54,7 @@ public class ApplicationInfo {
         return application;
     }
 
+    // 添加url对应的服务(应用)到应用字典中(如果已经存在不做处理)
     public static void addService(URL url) {
         Application application = applications.get(url.getPath());
         if (application == null) {

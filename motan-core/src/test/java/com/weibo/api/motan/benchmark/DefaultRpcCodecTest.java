@@ -34,10 +34,13 @@ public class DefaultRpcCodecTest {
     private static final int loop = 100000;
 
     public static void main(String[] args) throws Exception {
+        // 创建codec实例
         DefaultRpcCodec codec = new DefaultRpcCodec();
 
+        // 创建channel实例
         MockChannel channel = new MockChannel(new URL("motan", "localhost", 18080, IHello.class.getName()));
 
+        // 空的Request/Response/
         System.out.println("requestSize: " + requestSize(codec, channel, null).length);
         System.out.println("responseSize: " + responseSize(codec, channel, null).length);
         System.out.println("responseSize: " + exceptionResponseSize(codec, channel).length);
@@ -123,7 +126,7 @@ public class DefaultRpcCodecTest {
     }
 
     /**
-     * 不带参数的Request大小
+     * 不带返回值的异常response大小
      */
     private static byte[] exceptionResponseSize(DefaultRpcCodec codec, Channel channel) throws Exception {
         DefaultResponse response = new DefaultResponse();
